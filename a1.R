@@ -5,28 +5,26 @@ source("code/ADBM.functions.r")
 
 ## make starting values
 num <- 2
-a <- 10^seq(-4, 4, length=num)
+a <- seq(-4, 4, length=num)
 ai <- seq(-2, 2, length=num)
 aj <- seq(-2, 2, length=num)
-r.b <- 10^seq(-4, -1, length=num)
+r.b <- seq(-4, -1, length=num)
 starting_parameter_values <- expand.grid(a=a, ai=ai, aj=aj, r.b=r.b)
 
+## select the web to analyse and load it
 web.to.analyse <- "Benguela Pelagic"
-
 load(paste("data/food webs/", web.to.analyse, ".web.Rdata", sep=""))
 
+## Plot the real food web matrix
 Plot.matrix(all.web.info$predation.matrix)
 
+## fit the parameters
 NM.RH.web <- NM.ratio(all.web.info, starting_parameter_values=starting_parameter_values)
 
-Plot.matrix(NM.RH.web_match1s$web)
-Plot.matrix(NM.RH.web_accuracy$web)
+## look at the parameter values
+NM.RH.web$pars
+## and the accuracy
+NM.RH.web$power
 
-sum(NM.RH.web_accuracy$web)
-sum(NM.RH.web_match1s$web)
-##NM.RH.web_match1s <- NM.RH.web
-
-##NM.RH.web_accuracy <- NM.RH.web
-
-NM.RH.web_match1s$pars
-NM.RH.web_accuracy$pars
+## Plot the fitted food web matrix
+Plot.matrix(NM.RH.web$web)
