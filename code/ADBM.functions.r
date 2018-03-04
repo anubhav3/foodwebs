@@ -254,7 +254,7 @@ NM.ratio <- function(all.web.info, starting_parameter_values){
                                      r.a=r.a, r.b=10^best.o.p$par[4])
     best.web <- Get.web(best.EHL) 
     optim.power.pars <- c(e=e, n=n, ni=ni, a=10^best.o.p$par[1], ai=best.o.p$par[2],
-                          aj=best.o.p$par[3], r.a=r.a, r.b=best.o.p$par[4])
+                          aj=best.o.p$par[3], r.a=r.a, r.b=10^best.o.p$par[4])
   }
   
   list(power=best, pars=optim.power.pars, EHL=best.EHL, web=best.web)
