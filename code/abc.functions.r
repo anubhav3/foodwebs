@@ -142,7 +142,7 @@ Get.web <- function(EHL, energy.intake=F){
 
 
 ## the function that takes the parameters to optimise in opt and
-## returns the accuracy
+## returns the number of links
 ratio.power <- function(opt, x, optimizer){
   
   #print(opt)
@@ -192,7 +192,7 @@ ratio.power <- function(opt, x, optimizer){
   #if(sum(EHL[[2]]!=Inf)<(target.C*S^2))
   #  ratio.yy = -1    
   if(optimizer)
-    result = ratio.yy
+    result = sum(web)  #It will return the number of links
   if(!optimizer)
     result = c(ratio.yy, a)
   ##print(paste("XXX", result))
@@ -225,10 +225,10 @@ abc.ratio <- function(all.web.info, starting_parameter_values){
   n.sample = length(ratio.initial.pars[,1])
   dist = rep(NA,n.sample)
   for(i in 1:n.sample){
-    dist[i] = ratio.power(opt=ratio.initial.pars[i,], x=parms, optimizer=T)
+    dist[i] = abs(ratio.power(opt=ratio.initial.pars[i,], x=parms, optimizer=T)-sum(real.web))
   } 
-  index = order(dist,decreasing=T)
-  index = index[1:as.integer(tol*n.sample)]	#Only taking the ones with high Compare.links value
+  index = order(dist)
+  index = index[1:as.integer(tol*n.sample)]	#Only taking the ones with low distances
   
   pred.means = colMeans(ratio.initial.pars[index,])
   pred.sd = apply(ratio.initial.pars[index,],2,sd)
@@ -252,7 +252,7 @@ abc.ratio <- function(all.web.info, starting_parameter_values){
 Compare.links <- function(real.web, model.web){
   
   ## Here is the original function used in the PNAS 2008 paper
-  ##result <- sum(real.web==1 & model.web==1)  / sum(model.web)
+  ## result <- sum(real.web==1 & model.web==1)  / sum(model.web)
   
   ## New function, accuracy
   result <- sum(real.web == model.web) / dim(real.web)[[1]]^2
