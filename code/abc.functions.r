@@ -1,4 +1,4 @@
-rm(list=ls())
+#rm(list=ls())
 ## This function takes the model parameters and 
 ## body masses, and returns the
 ## vector of energies E
@@ -143,7 +143,7 @@ Get.web <- function(EHL, energy.intake=F){
 
 ## the function that takes the parameters to optimise in opt and
 ## returns the number of links
-ratio.power <- function(opt, x, optimizer){
+ratio.power <- function(opt, x){
   
   #print(opt)
   
@@ -186,15 +186,15 @@ ratio.power <- function(opt, x, optimizer){
   #  if(abs(target.C-C)>0.05)
   #    ratio.yy = -1
   #  else{            
-  ratio.yy <- Compare.links(real.web, web)
+  #ratio.yy <- Compare.links(real.web, web)
   #}
   #}
   #if(sum(EHL[[2]]!=Inf)<(target.C*S^2))
   #  ratio.yy = -1    
-  if(optimizer)
+  #if(optimizer)
     result = sum(web)  #It will return the number of links
-  if(!optimizer)
-    result = c(ratio.yy, a)
+  #if(!optimizer)
+  #  result = c(ratio.yy, a)
   ##print(paste("XXX", result))
   result
 }
@@ -203,7 +203,7 @@ ratio.power <- function(opt, x, optimizer){
 
 
 ## The function to call in order to do the optimisation
-abc.ratio <- function(all.web.info, starting_parameter_values){
+abc.ratio <- function(all.web.info, starting_parameter_values, tol=tol){
   
   ## the function runs the optimisation separately for each row of
   ## parameter starting values
@@ -221,17 +221,16 @@ abc.ratio <- function(all.web.info, starting_parameter_values){
   ##ratio.power(ratio.initial.pars[ip,], parms)
   
   
-  tol = ratio.initial.pars[1,5]
   n.sample = length(ratio.initial.pars[,1])
   dist = rep(NA,n.sample)
   for(i in 1:n.sample){
-    dist[i] = abs(ratio.power(opt=ratio.initial.pars[i,], x=parms, optimizer=T)-sum(real.web))
+    dist[i] = abs(ratio.power(opt=ratio.initial.pars[i,], x=parms)/S^2-sum(real.web)/S^2)
   } 
-  index = order(dist)
-  index = index[1:as.integer(tol*n.sample)]	#Only taking the ones with low distances
   
-  pred.means = colMeans(ratio.initial.pars[index,])
-  pred.sd = apply(ratio.initial.pars[index,],2,sd)
+  post_dists <- ratio.initial.pars[dist<tol,]
+  
+  pred.means = colMeans(post_dists)
+  pred.sd = apply(post_dists,2,sd)
   
   
   best.EHL <- Ratio.allometric.EHL(M=M,
@@ -242,9 +241,9 @@ abc.ratio <- function(all.web.info, starting_parameter_values){
   best.web <- Get.web(best.EHL) 
   optim.power.pars <- c(e=e, n=n, ni=ni, a=10^pred.means[1], ai=pred.means[2],
                         aj=pred.means[3], r.a=r.a, r.b=10^pred.means[4])
-  acc = ratio.power(opt = pred.means , x=parms, optimizer=T)
+  acc = ratio.power(opt = pred.means , x=parms)
   
-  list(acc = acc ,post = ratio.initial.pars[index,], pars=optim.power.pars, EHL=best.EHL, web=best.web)
+  list(acc = acc ,post = post_dists, pars=optim.power.pars, EHL=best.EHL, web=best.web)
 }
 
 

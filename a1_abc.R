@@ -2,6 +2,8 @@ rm(list=ls())
 source("code/abc.functions.r")
 source("code/Plot.matrix.r")
 
+foodweb <- "Benguela Pelagic"
+
 for (foodweb in c("Benguela Pelagic","Broadstone Stream","Broom","Capinteria","Caricaie Lakes","Coachella",
                   "EcoWEB41","EcoWEB60","Grasslands","Mill Stream","Sierra Lakes","Skipwith Pond",
                   "Small Reef","Tuesday Lake","Ythan","Grasslands"))
@@ -13,8 +15,8 @@ a <- runif(num,-4,4)
 ai <- runif(num,-2,2)
 aj <- runif(num,-2,2)
 r.b <- runif(num,-4,-1)
-tol = 0.02 #Percentage of samples to be chosen
-starting_parameter_values <- data.frame(a=a, ai=ai, aj=aj, r.b=r.b, tol=tol)
+tol = 0.01 #tolerance to accept or reject parameter set
+starting_parameter_values <- data.frame(a=a, ai=ai, aj=aj, r.b=r.b)
 
 ## select the web to analyse and load it
 web.to.analyse <- foodweb
@@ -28,7 +30,7 @@ par(mfrow=c(3,2))
 
 
 ## fit the parameters
-abc.RH.web <- abc.ratio(all.web.info, starting_parameter_values=starting_parameter_values)
+abc.RH.web <- abc.ratio(all.web.info, starting_parameter_values=starting_parameter_values, tol=tol)
 
 ## look at the parameter values
 abc.RH.web$pars
