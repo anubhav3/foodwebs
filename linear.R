@@ -23,7 +23,7 @@ prob <- 0.3
 n_sample <- as.integer(prob*num)
 obs <- x_y[sample(nrow(x_y), n_sample), ]
 
-#Paremeter Estimation (ABC)
+#Parameter Estimation (ABC)
 numm <- 10000
 a <- runif(numm,0,5)
 b <- runif(numm,0,5)
