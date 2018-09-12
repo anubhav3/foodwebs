@@ -243,7 +243,7 @@ abc.ratio <- function(all.web.info, starting_parameter_values, tol=tol){
                         aj=pred.means[3], r.a=r.a, r.b=10^pred.means[4])
   acc = ratio.power(opt = pred.means , x=parms)
   
-  list(acc = acc ,post = post_dists, pars=optim.power.pars, EHL=best.EHL, web=best.web)
+  list(acc = acc ,post = post_dists, pars=optim.power.pars, EHL=best.EHL, web=best.web, dist=dist)
 }
 
 
